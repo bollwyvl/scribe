@@ -11,7 +11,17 @@ require({
     'scribe-plugin-link-prompt-command': './bower_components/scribe-plugin-link-prompt-command/scribe-plugin-link-prompt-command',
     'scribe-plugin-sanitizer': './bower_components/scribe-plugin-sanitizer/scribe-plugin-sanitizer',
     'scribe-plugin-smart-lists': './bower_components/scribe-plugin-smart-lists/scribe-plugin-smart-lists',
-    'scribe-plugin-toolbar': './bower_components/scribe-plugin-toolbar/scribe-plugin-toolbar'
+    'scribe-plugin-toolbar': './bower_components/scribe-plugin-toolbar/scribe-plugin-toolbar',
+    'codemirror': './bower_components/codemirror',
+    'to-markdown': './bower_components/to-markdown/src/to-markdown',
+    'he': './bower_components/he/he',
+    'marked': './bower_components/marked/lib/marked'
+  },
+  shim: {
+    'to-markdown': {
+      deps: ['he'],
+      exports: "toMarkdown"
+    }
   }
 }, [
   'scribe',
@@ -25,7 +35,11 @@ require({
   'scribe-plugin-link-prompt-command',
   'scribe-plugin-sanitizer',
   'scribe-plugin-smart-lists',
-  'scribe-plugin-toolbar'
+  'scribe-plugin-toolbar',
+  'to-markdown',
+  'marked',
+  'codemirror/lib/codemirror',
+  'codemirror/mode/markdown/markdown'
 ], function (
   Scribe,
   scribePluginBlockquoteCommand,
@@ -38,17 +52,35 @@ require({
   scribePluginLinkPromptCommand,
   scribePluginSanitizer,
   scribePluginSmartLists,
-  scribePluginToolbar
+  scribePluginToolbar,
+  toMarkdown,
+  marked,
+  CodeMirror
 ) {
 
   'use strict';
 
-  var scribe = new Scribe(document.querySelector('.scribe'), { allowBlockElements: true });
+  var scribe = new Scribe(document.querySelector('.scribe'), { allowBlockElements: true }),
+    cm = window.cm = new CodeMirror(document.querySelector('.codemirror'), {
+      mode: 'markdown',
+      gfm: true
+    });
 
-  scribe.on('content-changed', updateHTML);
+  scribe.on('content-changed', updateMarkdown);
+  cm.on('change', updateWYSIWYG);
 
-  function updateHTML() {
-    document.querySelector('.scribe-html').value = scribe.getHTML();
+  function updateMarkdown() {
+    if(cm.hasFocus()){ return; }
+    cm.setValue(toMarkdown(scribe.getHTML()));
+  }
+  
+  function updateWYSIWYG(cm, change) {
+    if(change.origin == 'setValue'){ return; };
+    scribe.setHTML(marked.parse(cm.getValue()));
+    setTimeout(function(){
+      cm.display.input.blur();
+      cm.focus();
+    }, 0);
   }
 
   /**
@@ -77,7 +109,9 @@ require({
 
   scribe.use(scribePluginBlockquoteCommand());
   scribe.use(scribePluginCodeCommand());
-  scribe.use(scribePluginHeadingCommand(2));
+  [1,2,3].map(function(i){
+    scribe.use(scribePluginHeadingCommand(i));
+  });
   scribe.use(scribePluginIntelligentUnlinkCommand());
   scribe.use(scribePluginLinkPromptCommand());
   scribe.use(scribePluginToolbar(document.querySelector('.toolbar')));
@@ -100,7 +134,9 @@ require({
       ul: {},
       li: {},
       a: { href: true },
-      h2: {}
+      h1: {},
+      h2: {},
+      h3: {}
     }
   }));
   scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHtml());

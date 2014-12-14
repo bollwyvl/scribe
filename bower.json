@@ -13,6 +13,9 @@
     "scribe-plugin-link-prompt-command": "0.1.2",
     "scribe-plugin-sanitizer": "0.1.4",
     "scribe-plugin-smart-lists": "0.1.6",
-    "scribe-plugin-toolbar": "0.1.4"
+    "scribe-plugin-toolbar": "0.1.4",
+    "codemirror": "~4.8.0",
+    "to-markdown": "~0.0.2",
+    "marked": "~0.3.2"
   }
 }

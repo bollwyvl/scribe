@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Scribe</title>
+    <title>Scribedown</title>
+    
+  <link href='./bower_components/codemirror/lib/codemirror.css' rel='stylesheet'>
+
   </head>
   <style>
     * {
@@ -28,39 +31,48 @@
       padding: 0.5em;
     }
 
-    .scribe-html {
-      width: 100%;
-      font-family: monospace;
-      border: 1px solid hsl(0, 0%, 80%);
-      padding: 0.5em;
-    }
-
     p {
       margin-top: 0;
     }
+    .row {
+      display: flex;
+    }
+    .row > div {
+      flex: 1;
+    }
   </style>
   <body>
-    <h1>Scribe</h1>
-    <div class="toolbar">
-      <button data-command-name="bold">Bold</button>
-      <button data-command-name="italic">Italic</button>
-      <button data-command-name="strikeThrough">Strike Through</button>
-      <button data-command-name="removeFormat">Remove Formatting</button>
-      <button data-command-name="linkPrompt">Link</button>
-      <button data-command-name="unlink">Unlink</button>
-      <button data-command-name="insertOrderedList">Ordered List</button>
-      <button data-command-name="insertUnorderedList">Unordered List</button>
-      <button data-command-name="indent">Indent</button>
-      <button data-command-name="outdent">Outdent</button>
-      <button data-command-name="blockquote">Blockquote</button>
-      <button data-command-name="code">Code</button>
-      <button data-command-name="h2">H2</button>
-      <button data-command-name="undo">Undo</button>
-      <button data-command-name="redo">Redo</button>
+    <div class="row">
+      <div>
+        <h1><a href="https://github.com/guardian/scribe">Scribe</a></h1>
+        <div class="toolbar">
+          <button data-command-name="bold">Bold</button>
+          <button data-command-name="italic">Italic</button>
+          <button data-command-name="strikeThrough">Strike Through</button>
+          <button data-command-name="removeFormat">Remove Formatting</button>
+          <button data-command-name="linkPrompt">Link</button>
+          <button data-command-name="unlink">Unlink</button>
+          <button data-command-name="insertOrderedList">Ordered List</button>
+          <button data-command-name="insertUnorderedList">Unordered List</button>
+          <button data-command-name="indent">Indent</button>
+          <button data-command-name="outdent">Outdent</button>
+          <button data-command-name="blockquote">Blockquote</button>
+          <button data-command-name="code">Code</button>
+          <button data-command-name="h1">H1</button>
+          <button data-command-name="h2">H2</button>
+          <button data-command-name="h3">H3</button>
+          <button data-command-name="undo">Undo</button>
+          <button data-command-name="redo">Redo</button>
+        </div>
+        <div class="scribe"></div>
+      </div>
+      <div>
+        <h1>
+          <a href="http://codemirror.net/">CodeMirror</a>: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>
+          </h1>
+        <div class="codemirror"></div>
+      </div>
     </div>
-    <div class="scribe"></div>
-    <h2>Output</h2>
-    <textarea class="scribe-html" rows="15" readonly></textarea>
     <script src="bower_components/requirejs/require.js" data-main="./example"></script>
   </body>
 </html>
